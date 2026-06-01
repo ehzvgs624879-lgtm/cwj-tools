@@ -1,216 +1,287 @@
-index.html<div id="app">
-
-  <div id="top">
-    <input id="search" placeholder="搜索工具..." oninput="searchTools()">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CWJ TOOLS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#000;--card:#111116;--card2:#1a1a22;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.18);
+  --text:#f5f5f7;--muted:#86868b;
+  --blue:#2997ff;--green:#30d158;--purple:#bf5af2;--orange:#ff9f0a;--red:#ff453a;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'Noto Sans SC',sans-serif;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+.topbar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.2rem 0.7rem;background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--border);}
+.topbar-logo{font-size:1.1rem;font-weight:700;letter-spacing:0.06em;}
+.topbar-logo span{color:var(--blue);}
+.topbar-badge{font-size:0.65rem;background:var(--green);color:#000;padding:2px 8px;border-radius:20px;font-weight:700;}
+.pages{flex:1;overflow:hidden;position:relative;}
+.page{position:absolute;inset:0;overflow-y:auto;padding:1rem 1rem 1.5rem;opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity 0.28s ease,transform 0.28s ease;}
+.page.active{opacity:1;pointer-events:all;transform:none;}
+.tabbar{flex-shrink:0;display:flex;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);border-top:0.5px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0);}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.55rem 0 0.5rem;gap:4px;cursor:pointer;color:var(--muted);transition:color 0.2s;font-size:0.62rem;font-weight:500;}
+.tab i{font-size:1.3rem;transition:transform 0.2s;}
+.tab.active{color:var(--blue);}
+.tab.active i{transform:scale(1.12);}
+</style><style>
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:18px;padding:1.3rem;margin-bottom:0.9rem;}
+.card-title{font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1rem;}
+.card-title.blue{color:var(--blue);}
+.card-title.green{color:var(--green);}
+.card-title.purple{color:var(--purple);}
+.card-title.orange{color:var(--orange);}
+input[type=text],textarea{width:100%;background:var(--card2);border:0.5px solid var(--border);border-radius:12px;padding:0.8rem 1rem;color:var(--text);font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s;}
+input:focus,textarea:focus{border-color:var(--blue);}
+textarea{resize:none;min-height:90px;}
+.btn{width:100%;padding:0.85rem;border:none;border-radius:14px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;margin-top:0.8rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+.btn:active{transform:scale(0.96);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-green{background:var(--green);color:#000;}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text);}
+.result-box{background:var(--card2);border:0.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;margin-top:0.8rem;font-size:0.85rem;word-break:break-all;line-height:1.6;min-height:52px;position:relative;}
+.result-box.hidden{display:none;}
+.copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:var(--muted);padding:4px 10px;font-size:0.72rem;cursor:pointer;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;}
+.toggle-row>label:first-child{font-size:0.9rem;}
+.toggle{position:relative;width:44px;height:26px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:#333;border-radius:13px;cursor:pointer;transition:0.3s;}
+.slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.3s;}
+input:checked+.slider{background:var(--green);}
+input:checked+.slider::before{transform:translateX(18px);}
+.range-row{display:flex;align-items:center;gap:0.8rem;margin:0.6rem 0;}
+input[type=range]{flex:1;accent-color:var(--blue);}
+.range-val{font-size:1rem;font-weight:700;color:var(--blue);min-width:28px;text-align:right;}
+.strength-bar{display:flex;gap:4px;margin-top:0.6rem;}
+.strength-seg{height:4px;flex:1;border-radius:2px;background:var(--border);}
+.weather-hero{text-align:center;padding:1.5rem 1rem;background:linear-gradient(135deg,rgba(41,151,255,0.12),rgba(191,90,242,0.08));border-radius:16px;margin-bottom:0.8rem;}
+.weather-temp{font-size:4rem;font-weight:300;line-height:1;}
+.weather-desc{font-size:1rem;color:var(--muted);margin-top:0.3rem;}
+.weather-city{font-size:0.8rem;color:var(--blue);margin-top:0.2rem;font-weight:600;}
+.weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
+.weather-stat{background:var(--card2);border-radius:14px;padding:0.9rem;text-align:center;}
+.weather-stat .val{font-size:1.3rem;font-weight:600;}
+.weather-stat .lbl{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.home-hero{text-align:center;padding:2rem 1rem 1.5rem;background:linear-gradient(160deg,rgba(41,151,255,0.07),rgba(191,90,242,0.05));border-radius:20px;margin-bottom:1rem;}
+.home-title{font-size:2rem;font-weight:700;letter-spacing:-0.03em;line-height:1.15;}
+.home-title .g{background:linear-gradient(135deg,#2997ff,#bf5af2,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.home-sub{font-size:0.88rem;color:var(--muted);margin-top:0.6rem;line-height:1.6;}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.home-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:1.1rem;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:0.5rem;}
+.home-card:active{transform:scale(0.96);}
+.home-card .icon{font-size:1.6rem;}
+.home-card .name{font-size:0.85rem;font-weight:600;}
+.home-card .desc{font-size:0.72rem;color:var(--muted);line-height:1.4;}
+.toast{position:fixed;bottom:calc(64px + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,36,0.95);border:0.5px solid var(--border2);color:var(--text);padding:0.6rem 1.2rem;border-radius:20px;font-size:0.82rem;pointer-events:none;opacity:0;transition:all 0.3s;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;margin:1.5rem auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.chip-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+.chip{padding:0.35rem 0.9rem;border-radius:20px;font-size:0.8rem;font-weight:600;background:var(--card2);border:0.5px solid var(--border);color:var(--muted);cursor:pointer;}
+.chip.active{background:var(--purple);border-color:var(--purple);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <div class="topbar-logo">CWJ<span>.</span>TOOLS</div>
+  <div class="topbar-badge">ONLINE</div>
+</div>
+<div class="pages">
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="home-title">工具从未<br><span class="g">如此优雅</span></div>
+    <div class="home-sub">密码生成 · 实时天气 · 哈希计算 · 文本加密</div>
   </div>
-
-  <div id="view"></div>
-
-  <nav class="tabbar">
-    <button onclick="go('home')">🏠</button>
-    <button onclick="go('tools')">🧰</button>
-    <button onclick="go('fav')">⭐</button>
-    <button onclick="go('me')">👤</button>
-  </nav>
-
-</div>body{
-  margin:0;
-  font-family:-apple-system;
-  background:#000;
-  color:#fff;
-}
-
-#top{
-  padding:10px;
-  position:sticky;
-  top:0;
-  background:#000;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #222;
-  background:#111;
-  color:#fff;
-}
-
-#view{
-  height:calc(100vh - 110px);
-  padding:14px;
-  overflow:auto;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.card{
-  background:#111;
-  border:1px solid #222;
-  padding:14px;
-  border-radius:14px;
-}
-
-.card:active{
-  transform:scale(.96);
-}
-
-.tabbar{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  height:60px;
-  display:flex;
-  background:#0a0a0a;
-  border-top:1px solid #222;
-}
-
-.tabbar button{
-  flex:1;
-  border:none;
-  background:none;
-  color:#666;/* =========================
-   🧠 工具库（可扩展核心）
-========================= */
-const tools = {
-  password:{
-    name:"密码生成",
-    icon:"🔑",
-    run:()=> {
-      const c="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      let p="";
-      for(let i=0;i<16;i++) p+=c[Math.floor(Math.random()*c.length)];
-      return p;
-    }
-  },
-
-  hash:{
-    name:"SHA-256",
-    icon:"#️⃣",
-    run:async(text)=>{
-      const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(text));
-      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-    }
-  },
-
-  base64:{
-    name:"Base64",
-    icon:"📦",
-    run:(t)=>btoa(t)
-  },
-
-  time:{
-    name:"时间戳",
-    icon:"⏱️",
-    run:()=>Date.now()
-  }
-};
-
-/* =========================
-   💾 本地存储
-========================= */
-let fav = JSON.parse(localStorage.getItem("fav")||"[]");
-let recent = JSON.parse(localStorage.getItem("recent")||"[]");
-
-/* =========================
-   🚀 路由
-========================= */
-function go(page){
-  if(page==="home") renderHome();
-  if(page==="tools") renderTools();
-  if(page==="fav") renderFav();
-  if(page==="me") renderMe();
-}
-
-/* =========================
-   🧰 工具渲染
-========================= */
-function renderTools(list=tools){
-  document.getElementById("view").innerHTML=`
-    <div class="grid">
-      ${Object.keys(list).map(k=>`
-        <div class="card" onclick="useTool('${k}')">
-          ${list[k].icon}<br>${list[k].name}
-        </div>
-      `).join("")}
+  <div class="home-grid">
+    <div class="home-card" onclick="goTab('pwd')"><div class="icon">🔑</div><div class="name">密码生成器</div><div class="desc">高强度随机密码</div></div>
+    <div class="home-card" onclick="goTab('weather')"><div class="icon">🌤️</div><div class="name">实时天气</div><div class="desc">搜索城市查看实况</div></div>
+    <div class="home-card" onclick="goTab('hash')"><div class="icon">#️⃣</div><div class="name">哈希计算</div><div class="desc">SHA-256 即时生成</div></div>
+    <div class="home-card" onclick="goTab('crypto')"><div class="icon">🔐</div><div class="name">文本加密</div><div class="desc">AES-256 本地加解密</div></div>
+  </div>
+</div>
+<div class="page" id="page-pwd">
+  <div class="card">
+    <div class="card-title blue"><i class="fa-solid fa-key"></i> 密码生成器</div>
+    <div class="range-row">
+      <span style="font-size:0.85rem;color:var(--muted)">长度</span>
+      <input type="range" id="pwdLen" min="6" max="64" value="16" oninput="document.getElementById('pwdLenVal').textContent=this.value;genPwd()">
+      <span class="range-val" id="pwdLenVal">16</span>
     </div>
-  `;
+    <div class="toggle-row"><label>大写字母 A–Z</label><label class="toggle"><input type="checkbox" id="pwdUpper" checked onchange="genPwd()"><span class="slider"></span></label></div>
+    <div class="toggle-row"><label>数字 0–9</label><label class="toggle"><input type="checkbox" id="pwdNum" checked onchange="genPwd()"><span class="slider"></span></label></div>
+    <div class="toggle-row"><label>特殊符号 !@#…</label><label class="toggle"><input type="checkbox" id="pwdSym" onchange="genPwd()"><span class="slider"></span></label></div>
+    <div class="strength-bar"><div class="strength-seg" id="s1"></div><div class="strength-seg" id="s2"></div><div class="strength-seg" id="s3"></div><div class="strength-seg" id="s4"></div></div>
+    <div class="result-box" id="pwdResult"><button class="copy-btn" onclick="copyText('pwdResult')">复制</button><span id="pwdText"></span></div>
+    <button class="btn btn-blue" onclick="genPwd()"><i class="fa-solid fa-rotate"></i> 重新生成</button>
+  </div>
+</div>
+<div class="page" id="page-weather">
+  <div class="card">
+    <div class="card-title orange"><i class="fa-solid fa-cloud-sun"></i> 实时天气</div>
+    <input type="text" id="cityInput" placeholder="输入城市名（中文或英文）" style="margin-bottom:0.8rem;">
+    <button class="btn btn-blue" onclick="getWeather()"><i class="fa-solid fa-magnifying-glass"></i> 查询天气</button>
+  </div>
+  <div id="weatherResult"></div>
+</div>
+<div class="page" id="page-hash">
+  <div class="card">
+    <div class="card-title purple"><i class="fa-solid fa-fingerprint"></i> 哈希计算</div>
+    <div class="chip-row">
+      <div class="chip active" onclick="setHashType('SHA-256',this)">SHA-256</div>
+      <div class="chip" onclick="setHashType('SHA-1',this)">SHA-1</div>
+      <div class="chip" onclick="setHashType('SHA-512',this)">SHA-512</div>
+    </div>
+    <textarea id="hashInput" placeholder="输入需要计算哈希的文本…" oninput="calcHash()"></textarea>
+    <div class="result-box hidden" id="hashResult"><button class="copy-btn" onclick="copyText('hashResult')">复制</button><span id="hashText"></span></div>
+  </div>
+</div>
+<div class="page" id="page-crypto">
+  <div class="card">
+    <div class="card-title green"><i class="fa-solid fa-shield-halved"></i> 文本加密 / 解密</div>
+    <textarea id="cryptoInput" placeholder="输入要加密或解密的文本…"></textarea>
+    <input type="text" id="cryptoKey" placeholder="密钥（越长越安全）" style="margin-top:0.7rem;">
+    <div style="display:flex;gap:0.6rem;">
+      <button class="btn btn-green" style="margin-top:0.8rem;" onclick="doCrypto('enc')"><i class="fa-solid fa-lock"></i> 加密</button>
+      <button class="btn btn-outline" style="margin-top:0.8rem;" onclick="doCrypto('dec')"><i class="fa-solid fa-lock-open"></i> 解密</button>
+    </div>
+    <div class="result-box hidden" id="cryptoResult"><button class="copy-btn" onclick="copyText('cryptoResult')">复制</button><span id="cryptoText"></span></div>
+  </div>
+</div>
+</div><script>
+function goTab(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
 }
-
-/* =========================
-   ⚙️ 使用工具（核心）
-========================= */
-async function useTool(key){
-  const t = tools[key];
-
-  let input = prompt("输入内容（可空）");
-
-  let result = typeof t.run === "function"
-    ? await t.run(input)
-    : "error";
-
-  recent.unshift(key);
-  recent=[...new Set(recent)].slice(0,5);
-  localStorage.setItem("recent",JSON.stringify(recent));
-
-  document.getElementById("view").innerHTML=`
-    <div onclick="go('tools')" style="margin-bottom:10px">← 返回</div>
-    <div class="card">${result}</div>
-    <button onclick="addFav('${key}')">⭐ 收藏</button>
-  `;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
 }
-
-/* =========================
-   ⭐ 收藏系统
-========================= */
-function addFav(k){
-  if(!fav.includes(k)) fav.push(k);
-  localStorage.setItem("fav",JSON.stringify(fav));
-  alert("已收藏");
+function copyText(id){
+  const text=document.getElementById(id).innerText.replace('复制','').trim();
+  navigator.clipboard.writeText(text).then(()=>toast('已复制 ✓')).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);toast('已复制 ✓');
+  });
 }
-
-/* =========================
-   ⭐ 收藏页
-========================= */
-function renderFav(){
-  document.getElementById("view").innerHTML=`
-    <h2>收藏</h2>
-    ${fav.length
-      ? fav.map(k=>`<div class="card">${tools[k].name}</div>`).join("")
-      : "暂无收藏"}
-  `;
+function genPwd(){
+  const len=parseInt(document.getElementById('pwdLen').value);
+  let chars='abcdefghijklmnopqrstuvwxyz';
+  if(document.getElementById('pwdUpper').checked)chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if(document.getElementById('pwdNum').checked)chars+='0123456789';
+  if(document.getElementById('pwdSym').checked)chars+='!@#$%^&*()_+-=[]{}|;:,.<>?';
+  const arr=new Uint32Array(len);crypto.getRandomValues(arr);
+  let pwd='';for(let i=0;i<len;i++)pwd+=chars[arr[i]%chars.length];
+  document.getElementById('pwdText').textContent=pwd;
+  let score=0;
+  if(len>=12)score++;if(len>=20)score++;
+  if(document.getElementById('pwdUpper').checked)score++;
+  if(document.getElementById('pwdNum').checked)score++;
+  if(document.getElementById('pwdSym').checked)score++;
+  const lvl=score<=2?1:score<=3?2:score<=4?3:4;
+  const colors=['','#ff453a','#ff9f0a','#2997ff','#30d158'];
+  for(let i=1;i<=4;i++)document.getElementById('s'+i).style.background=i<=lvl?colors[lvl]:'var(--border)';
 }
-
-/* =========================
-   👤 我的
-========================= */
-function renderMe(){
-  document.getElementById("view").innerHTML=`
-    <h2>系统信息</h2>
-    <div class="card">CWJ TOOLS 2.7</div>
-    <div class="card">工具数量：${Object.keys(tools).length}</div>
-  `;
+genPwd();
+async function getWeather(){
+  const city=document.getElementById('cityInput').value.trim();
+  if(!city){toast('请输入城市名');return;}
+  const div=document.getElementById('weatherResult');
+  div.innerHTML='<div class="spinner"></div>';
+  try{
+    const res=await fetch('https://wttr.in/'+encodeURIComponent(city)+'?format=j1');
+    if(!res.ok)throw new Error();
+    const d=await res.json();
+    const cur=d.current_condition[0];
+    const area=d.nearest_area[0];
+    const cityName=(area.areaName[0]?.value||city)+', '+(area.country[0]?.value||'');
+    const desc=cur.lang_zh?cur.lang_zh[0]?.value:cur.weatherDesc[0]?.value;
+    div.innerHTML=`<div class="weather-hero">
+      <div class="weather-temp">${cur.temp_C}°</div>
+      <div class="weather-desc">${desc}</div>
+      <div class="weather-city"><i class="fa-solid fa-location-dot"></i> ${cityName}</div>
+    </div>
+    <div class="weather-grid">
+      <div class="weather-stat"><div class="val">${cur.FeelsLikeC}°</div><div class="lbl">体感温度</div></div>
+      <div class="weather-stat"><div class="val">${cur.humidity}%</div><div class="lbl">湿度</div></div>
+      <div class="weather-stat"><div class="val">${cur.windspeedKmph} km/h</div><div class="lbl">风速</div></div>
+      <div class="weather-stat"><div class="val">${cur.visibility} km</div><div class="lbl">能见度</div></div>
+    </div>
+    <div class="card" style="margin-top:0.8rem;text-align:center;font-size:0.8rem;color:var(--muted)">UV：${cur.uvIndex} · 数据来自 wttr.in</div>`;
+  }catch(e){
+    div.innerHTML='<div class="card" style="color:var(--red);text-align:center;"><i class="fa-solid fa-circle-exclamation"></i> 查询失败，请检查城市名或网络</div>';
+  }
 }
-
-/* =========================
-   🔍 搜索系统
-========================= */
-function searchTools(){
-  const v=document.getElementById("search").value.toLowerCase();
-
-  const filtered = Object.fromEntries(
-    Object.entries(tools).filter(([k,t])=>
-      t.name.toLowerCase().includes(v)
-    )
+document.getElementById('cityInput').addEventListener('keydown',e=>{if(e.key==='Enter')getWeather();});
+</script><script>
+let hashType='SHA-256';
+function setHashType(t,el){
+  hashType=t;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');calcHash();
+}
+async function calcHash(){
+  const text=document.getElementById('hashInput').value;
+  const box=document.getElementById('hashResult');
+  if(!text){box.classList.add('hidden');return;}
+  const buf=await crypto.subtle.digest(hashType,new TextEncoder().encode(text));
+  const hex=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  document.getElementById('hashText').textContent=hex;
+  box.classList.remove('hidden');
+}
+async function deriveKey(p){
+  const e=new TextEncoder();
+  const k=await crypto.subtle.importKey('raw',e.encode(p),{name:'PBKDF2'},false,['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt:e.encode('cwjtools_salt'),iterations:100000,hash:'SHA-256'},
+    k,{name:'AES-GCM',length:256},false,['encrypt','decrypt']
   );
-
-  renderTools(filtered);
 }
-
-/* 启动 */
-renderTools();
+async function doCrypto(mode){
+  const input=document.getElementById('cryptoInput').value.trim();
+  const pass=document.getElementById('cryptoKey').value.trim();
+  const box=document.getElementById('cryptoResult');
+  const out=document.getElementById('cryptoText');
+  if(!input){toast('请输入文本');return;}
+  if(!pass){toast('请输入密钥');return;}
+  try{
+    const key=await deriveKey(pass);
+    if(mode==='enc'){
+      const iv=crypto.getRandomValues(new Uint8Array(12));
+      const enc=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(input));
+      const combined=new Uint8Array(iv.byteLength+enc.byteLength);
+      combined.set(iv,0);combined.set(new Uint8Array(enc),iv.byteLength);
+      out.textContent=btoa(String.fromCharCode(...combined));
+      toast('加密成功 ✓');
+    }else{
+      const bytes=Uint8Array.from(atob(input),c=>c.charCodeAt(0));
+      const dec=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes.slice(0,12)},key,bytes.slice(12));
+      out.textContent=new TextDecoder().decode(dec);
+      toast('解密成功 ✓');
+    }
+    box.classList.remove('hidden');
+  }catch(e){
+    out.textContent='⚠️ '+(mode==='dec'?'解密失败，请检查密钥或密文':'加密失败');
+    box.classList.remove('hidden');
+  }
 }
+</script>
+</body>
+</html>
+<div class="tabbar">
+  <div class="tab active" id="tab-home" onclick="goTab('home')"><i class="fa-solid fa-house"></i>首页</div>
+  <div class="tab" id="tab-pwd" onclick="goTab('pwd')"><i class="fa-solid fa-key"></i>密码</div>
+  <div class="tab" id="tab-weather" onclick="goTab('weather')"><i class="fa-solid fa-cloud-sun"></i>天气</div>
+  <div class="tab" id="tab-hash" onclick="goTab('hash')"><i class="fa-solid fa-fingerprint"></i>哈希</div>
+  <div class="tab" id="tab-crypto" onclick="goTab('crypto')"><i class="fa-solid fa-shield-halved"></i>加密</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
