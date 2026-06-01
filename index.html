@@ -6,6 +6,7 @@
 <title>CWJ TOOLS</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+/* 核心与变量 */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
   --bg:#000;--card:#111116;--card2:#1a1a22;
@@ -16,12 +17,16 @@
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'Noto Sans SC',sans-serif;overflow:hidden;}
 .app{display:flex;flex-direction:column;height:100vh;height:100dvh;position:relative;}
 canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* 顶部与导航 */
 .topbar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.2rem 0.7rem;background:rgba(0,0,0,0.72);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--border);position:relative;z-index:10;}
 .topbar-logo{font-size:1.1rem;font-weight:700;letter-spacing:0.06em;}
 .topbar-logo span{color:var(--blue);}
 .topbar-right{display:flex;align-items:center;gap:0.7rem;}
 .topbar-badge{font-size:0.65rem;background:var(--green);color:#000;padding:2px 8px;border-radius:20px;font-weight:700;}
 .theme-btn{background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:4px;}
+
+/* 视图视窗 */
 .pages{flex:1;overflow:hidden;position:relative;z-index:1;}
 .page{position:absolute;inset:0;overflow-y:auto;padding:1rem 1rem 1.5rem;opacity:0;pointer-events:none;transform:translateY(16px);transition:opacity 0.35s ease,transform 0.35s ease;}
 .page.active{opacity:1;pointer-events:all;transform:none;}
@@ -30,12 +35,15 @@ canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .tab i{font-size:1.3rem;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);}
 .tab.active{color:var(--blue);}
 .tab.active i{transform:scale(1.2);}
+/* 通用组件卡片 */
 .card{background:var(--card);border:0.5px solid var(--border);border-radius:18px;padding:1.3rem;margin-bottom:0.9rem;transition:transform 0.2s,box-shadow 0.2s;}
 .card-title{font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1rem;}
 .card-title.blue{color:var(--blue);}
 .card-title.green{color:var(--green);}
 .card-title.purple{color:var(--purple);}
 .card-title.orange{color:var(--orange);}
+
+/* 表单元素 */
 input[type=text],textarea{width:100%;background:var(--card2);border:0.5px solid var(--border);border-radius:12px;padding:0.8rem 1rem;color:var(--text);font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
 input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(41,151,255,0.15);}
 textarea{resize:none;min-height:90px;}
@@ -45,9 +53,27 @@ textarea{resize:none;min-height:90px;}
 .btn-blue:hover{box-shadow:0 6px 20px rgba(41,151,255,0.45);}
 .btn-green{background:linear-gradient(135deg,#30d158,#25a244);color:#000;box-shadow:0 4px 15px rgba(48,209,88,0.3);}
 .btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text);}
+
+/* 结果容器与开关 */
 .result-box{background:var(--card2);border:0.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;margin-top:0.8rem;font-size:0.85rem;word-break:break-all;line-height:1.6;min-height:52px;position:relative;transition:border-color 0.3s;}
 .result-box.hidden{display:none;}
-.result-box.glow{border-color:var(--blue);box-shadow:0 0 12px rgba(41,151,255,0.2);}<style>
+.result-box.glow{border-color:var(--blue);box-shadow:0 0 12px rgba(41,151,255,0.2);}
+.copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:var(--muted);padding:4px 10px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
+.copy-btn:active{background:var(--blue);color:#fff;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;margin-bottom:0.4rem;}
+.toggle-row>label:first-child{font-size:0.9rem;}
+.toggle{position:relative;width:44px;height:26px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:#333;border-radius:13px;cursor:pointer;transition:0.3s;}
+.slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.3);}
+input:checked+.slider{background:var(--green);}
+input:checked+.slider::before{transform:translateX(18px);}
+.range-row{display:flex;align-items:center;gap:0.8rem;margin:0.6rem 0 1rem;}
+input[type=range]{flex:1;accent-color:var(--blue);}
+.range-val{font-size:1rem;font-weight:700;color:var(--blue);min-width:28px;text-align:right;}
+.strength-bar{display:flex;gap:4px;margin-top:0.6rem;}
+.strength-seg{height:4px;flex:1;border-radius:2px;background:var(--border);transition:background 0.4s ease;}
+/* 天气及专属组件 */
 .weather-hero{text-align:center;padding:1.5rem 1rem;background:linear-gradient(135deg,rgba(41,151,255,0.12),rgba(191,90,242,0.08));border-radius:16px;margin-bottom:0.8rem;position:relative;overflow:hidden;}
 .weather-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(41,151,255,0.15),transparent 70%);pointer-events:none;}
 .weather-temp{font-size:4rem;font-weight:300;line-height:1;background:linear-gradient(135deg,#fff,#86868b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -58,6 +84,8 @@ textarea{resize:none;min-height:90px;}
 .weather-stat:active{transform:scale(0.96);}
 .weather-stat .val{font-size:1.3rem;font-weight:600;}
 .weather-stat .lbl{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+
+/* 主页大本营样式 */
 .home-hero{text-align:center;padding:2rem 1rem 1.5rem;background:linear-gradient(160deg,rgba(41,151,255,0.07),rgba(191,90,242,0.05));border-radius:20px;margin-bottom:1rem;position:relative;overflow:hidden;}
 .home-hero::after{content:'';position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(41,151,255,0.15),transparent);top:-60px;right:-60px;border-radius:50%;animation:pulse-glow 3s ease infinite;}
 @keyframes pulse-glow{0%,100%{transform:scale(1);opacity:0.5;}50%{transform:scale(1.2);opacity:1;}}
@@ -75,6 +103,8 @@ textarea{resize:none;min-height:90px;}
 .home-card .name{font-size:0.85rem;font-weight:600;}
 .home-card .desc{font-size:0.72rem;color:var(--muted);line-height:1.4;}
 .home-card .arrow{font-size:0.7rem;color:var(--blue);margin-top:auto;}
+
+/* 交互反馈浮层 */
 .toast{position:fixed;bottom:calc(64px + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,20,26,0.95);border:0.5px solid var(--border2);color:var(--text);padding:0.6rem 1.2rem;border-radius:20px;font-size:0.82rem;pointer-events:none;opacity:0;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);z-index:999;white-space:nowrap;backdrop-filter:blur(10px);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;margin:1.5rem auto;}
@@ -91,19 +121,146 @@ textarea{resize:none;min-height:90px;}
 <body>
 <canvas id="bg"></canvas>
 <div class="app">
-<div class="topbar">
-  <div class="topbar-logo">CWJ<span>.</span>TOOLS</div>
-  <div class="topbar-right">
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
-    <div class="topbar-badge">ONLINE</div>
+  <div class="topbar">
+    <div class="topbar-logo">CWJ<span>.</span>TOOLS</div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+      <div class="topbar-badge">ONLINE</div>
+    </div>
+  </div>
+
+  <div class="pages">
+    <div class="page active" id="page-home">
+      <div class="home-hero fade-in">
+        <div class="home-title">工具从未<br><span class="g">如此优雅</span></div>
+        <div class="home-sub">密码生成 · 实时天气 · 哈希计算 · 文本加密</div>
+      </div>
+      <div class="home-grid fade-in">
+        <div class="home-card" onclick="goTab('pwd')">
+          <i class="fa-solid fa-key icon" style="color:var(--blue)"></i>
+          <div class="name">密码生成器</div>
+          <div class="desc">强密码生成与安全分析</div>
+          <i class="fa-solid fa-arrow-right arrow"></i>
+        </div>
+        <div class="home-card" onclick="goTab('weather')">
+          <i class="fa-solid fa-cloud-sun icon" style="color:var(--green)"></i>
+          <div class="name">实时天气</div>
+          <div class="desc">查询全球城市实时气象</div>
+          <i class="fa-solid fa-arrow-right arrow"></i>
+        </div>
+        <div class="home-card" onclick="goTab('hash')">
+          <i class="fa-solid fa-hashtag icon" style="color:var(--purple)"></i>
+          <div class="name">哈希计算</div>
+          <div class="desc">SHA系列安全散列计算</div>
+          <i class="fa-solid fa-arrow-right arrow"></i>
+        </div>
+        <div class="home-card" onclick="goTab('crypto')">
+          <i class="fa-solid fa-lock icon" style="color:var(--orange)"></i>
+          <div class="name">文本加密</div>
+          <div class="desc">AES-256 高级加解密</div>
+          <i class="fa-solid fa-arrow-right arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-pwd">
+      <div class="card">
+        <div class="card-title blue">密码生成器</div>
+        <div class="range-row">
+          <label>字符长度</label>
+          <input type="range" id="pwdLen" min="6" max="32" value="16" oninput="document.getElementById('pwdLenVal').textContent=this.value; genPwd();">
+          <span class="range-val" id="pwdLenVal">16</span>
+        </div>
+        <div class="toggle-row">
+          <label>大写字母 (A-Z)</label>
+          <label class="toggle">
+            <input type="checkbox" id="pwdUpper" checked onchange="genPwd()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <label>数字字符 (0-9)</label>
+          <label class="toggle">
+            <input type="checkbox" id="pwdNum" checked onchange="genPwd()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <label>特殊符号</label>
+          <label class="toggle">
+            <input type="checkbox" id="pwdSym" checked onchange="genPwd()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button class="btn btn-blue" onclick="genPwd()"><i class="fa-solid fa-rotate"></i> 重新生成密码</button>
+        <div class="result-box" id="pwdResult">
+          <span id="pwdText"></span>
+          <button class="copy-btn" onclick="copyText('pwdResult')">复制</button>
+        </div>
+        <div class="strength-bar">
+          <div class="strength-seg" id="s1"></div>
+          <div class="strength-seg" id="s2"></div>
+          <div class="strength-seg" id="s3"></div>
+          <div class="strength-seg" id="s4"></div>
+        </div>
+      </div>
+    </div>
+    <div class="page" id="page-weather">
+      <div class="card">
+        <div class="card-title green">实时天气</div>
+        <div style="display:flex; gap:0.5rem; margin-bottom:0.8rem;">
+          <input type="text" id="cityInput" placeholder="输入城市拼音或中文 (如: beijing)">
+          <button class="btn btn-green" onclick="getWeather()" style="width:auto; margin-top:0; padding:0 1.2rem;"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div id="weatherResult"></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-hash">
+      <div class="card">
+        <div class="card-title purple">哈希散列计算</div>
+        <div class="chip-row">
+          <span class="chip active" onclick="setHashType('SHA-256', this)">SHA-256</span>
+          <span class="chip" onclick="setHashType('SHA-512', this)">SHA-512</span>
+          <span class="chip" onclick="setHashType('SHA-1', this)">SHA-1</span>
+        </div>
+        <textarea id="hashInput" placeholder="输入你想计算哈希指纹的明文数据..." oninput="calcHash()"></textarea>
+        <div class="result-box hidden" id="hashResult">
+          <span id="hashText"></span>
+          <button class="copy-btn" onclick="copyText('hashResult')">复制</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-crypto">
+      <div class="card">
+        <div class="card-title orange">高级文本加解密 (AES-256-GCM)</div>
+        <textarea id="cryptoInput" placeholder="输入需要加密的明文，或需要解密的 Base64 密文..."></textarea>
+        <input type="text" id="cryptoKey" placeholder="自设定专属通信对称密钥 (Password)" style="margin-top:0.6rem;">
+        <div style="display:flex; gap:0.6rem;">
+          <button class="btn btn-blue" onclick="doCrypto('enc')" style="flex:1;"><i class="fa-solid fa-lock"></i> 文本加密</button>
+          <button class="btn btn-outline" onclick="doCrypto('dec')" style="flex:1; margin-top:0.8rem;"><i class="fa-solid fa-lock-open"></i> 文本解密</button>
+        </div>
+        <div class="result-box hidden" id="cryptoResult">
+          <span id="cryptoText"></span>
+          <button class="copy-btn" onclick="copyText('cryptoResult')">复制</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab active" id="tab-home" onclick="goTab('home')"><i class="fa-solid fa-house"></i>主页</div>
+    <div class="tab" id="tab-pwd" onclick="goTab('pwd')"><i class="fa-solid fa-key"></i>密码</div>
+    <div class="tab" id="tab-weather" onclick="goTab('weather')"><i class="fa-solid fa-cloud-sun"></i>天气</div>
+    <div class="tab" id="tab-hash" onclick="goTab('hash')"><i class="fa-solid fa-hashtag"></i>哈希</div>
+    <div class="tab" id="tab-crypto" onclick="goTab('crypto')"><i class="fa-solid fa-lock"></i>加密</div>
   </div>
 </div>
-<div class="pages">
-<div class="page active" id="page-home">
-  <div class="home-hero fade-in">
-    <div class="home-title">工具从未<br><span class="g">如此优雅</span></div>
-    <div class="home-sub">密码生成 · 实时天气 · 哈希计算 · 文本加密<script>
-// 粒子背景
+
+<div id="toast" class="toast"></div>
+<script>
+// 粒子背景动效
 const canvas=document.getElementById('bg');
 const ctx=canvas.getContext('2d');
 let W,H,particles=[];
@@ -127,14 +284,14 @@ function animP(){
 }
 animP();
 
-// 滚动入场动画
+// 视窗滚动入场动效
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
 },{threshold:0.1});
 function observeFadeIns(){document.querySelectorAll('.fade-in:not(.visible)').forEach((el,i)=>{el.style.transitionDelay=i*0.08+'s';observer.observe(el);});}
 observeFadeIns();
 
-// 深色/浅色切换
+// 主题动态转换
 let isLight=false;
 function toggleTheme(){
   isLight=!isLight;
@@ -142,7 +299,7 @@ function toggleTheme(){
   document.getElementById('themeBtn').innerHTML=isLight?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';
 }
 
-// 导航
+// 选项卡路由
 function goTab(n){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -151,14 +308,14 @@ function goTab(n){
   setTimeout(observeFadeIns,50);
 }
 
-// Toast
+// 轻提示组件
 function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-// 复制
+// 快速异步剪贴板
 function copyText(id){
   const text=document.getElementById(id).innerText.replace('复制','').trim();
   navigator.clipboard.writeText(text).then(()=>toast('已复制 ✓')).catch(()=>{
@@ -168,7 +325,7 @@ function copyText(id){
   });
 }
 
-// 密码生成
+// 密码安全生成算法
 function genPwd(){
   const len=parseInt(document.getElementById('pwdLen').value);
   let chars='abcdefghijklmnopqrstuvwxyz';
@@ -189,9 +346,8 @@ function genPwd(){
   const colors=['','#ff453a','#ff9f0a','#2997ff','#30d158'];
   for(let i=1;i<=4;i++)document.getElementById('s'+i).style.background=i<=lvl?colors[lvl]:'var(--border)';
 }
-genPwd();
-</script><script>
-// 天气
+setTimeout(genPwd,200);
+// 气象数据远程拉取
 async function getWeather(){
   const city=document.getElementById('cityInput').value.trim();
   if(!city){toast('请输入城市名');return;}
@@ -223,7 +379,7 @@ async function getWeather(){
 }
 document.getElementById('cityInput').addEventListener('keydown',e=>{if(e.key==='Enter')getWeather();});
 
-// 哈希
+// 浏览器内核原生哈希密码指纹
 let hashType='SHA-256';
 function setHashType(t,el){
   hashType=t;
@@ -241,7 +397,7 @@ async function calcHash(){
   box.classList.add('glow');setTimeout(()=>box.classList.remove('glow'),600);
 }
 
-// AES-256-GCM 加密
+// 高级 AES-256-GCM 核心安全加解密
 async function deriveKey(p){
   const e=new TextEncoder();
   const k=await crypto.subtle.importKey('raw',e.encode(p),{name:'PBKDF2'},false,['deriveKey']);
@@ -282,11 +438,3 @@ async function doCrypto(mode){
 </script>
 </body>
 </html>
-.copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:var(--muted);padding:4px 10px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
-.copy-btn:active{background:var(--blue);color:#fff;}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;}
-.toggle-row>label:first-child{font-size:0.9rem;}
-.toggle{position:relative;width:44px;height:26px;flex-shrink:0;}
-.toggle input{opacity:0;width:0;height:0;}
-.slider{position:absolute;inset:0;background:#333;border-radius:13px;cursor:pointer;transition:0.3s;}
-.slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transit
