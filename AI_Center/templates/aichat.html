@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI 聊天 - CWJ Tools</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#0b0b0b;color:#fff;padding:20px}
+    .card{background:#111;padding:20px;border-radius:8px;max-width:800px;margin:0 auto}
+    textarea,input,select{width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#0b0b0b;color:#fff}
+    button{padding:10px 16px;border-radius:6px;border:none;background:#6a5acd;color:#fff;cursor:pointer}
+    .result{white-space:pre-wrap;background:#0b0b0b;padding:12px;border-radius:6px;border:1px solid #222;margin-top:10px}
+    .error{color:#ff6666}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>AI 聊天 — CWJ Tools</h1>
+    <form method="post" action="/aichat">
+      <label for="chat_input">请输入你的问题：</label>
+      <textarea id="chat_input" name="chat_input" rows="4" maxlength="500" placeholder="输入你想问的内容...">{{ chat_input or '' }}</textarea>
+      <div style="margin-top:8px"><button type="submit">发送</button></div>
+    </form>
+
+    {% if chat_error %}
+      <div class="result error">⚠️ {{ chat_error }}</div>
+    {% endif %}
+
+    {% if chat_result %}
+      <div class="result">{{ chat_result }}</div>
+    {% endif %}
+  </div>
+</body>
+</html>
