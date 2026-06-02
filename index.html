@@ -65,4 +65,63 @@ pickRandom();
 async function genQR(){const text=document.getElementById('qrInput').value.trim();if(!text){toast('请输入内容');return;}const wrap=document.getElementById('qrWrap');wrap.innerHTML='<div class="spinner"></div>';try{const QRCode=(await import('https://cdn.skypack.dev/qrcode')).default;const canvas=document.createElement('canvas');await QRCode.toCanvas(canvas,text,{width:200,margin:2,color:{dark:'#000',light:'#fff'}});wrap.innerHTML='';wrap.appendChild(canvas);}catch(e){wrap.innerHTML='<div style="color:var(--red);text-align:center;margin-top:1rem;"><i class="fa-solid fa-circle-exclamation"></i> 生成失败</div>';}}
 document.getElementById('qrInput').addEventListener('keydown',e=>{if(e.key==='Enter')genQR();});
 </script>
+  <div id="cwj-ai" style="
+position:fixed;
+bottom:20px;
+right:20px;
+width:320px;
+height:420px;
+background:#0f1117;
+color:#fff;
+border:1px solid #333;
+border-radius:12px;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+font-family:sans-serif;
+z-index:99999;
+">
+
+  <div style="padding:10px;background:#1a1d25;font-weight:bold;">
+    CWJ AI Chat
+  </div>
+
+  <div id="chatBox" style="flex:1;padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px;">
+    <div style="background:#2a2f3a;padding:8px;border-radius:8px;align-self:flex-start;">
+      你好，我是 CWJ AI
+    </div>
+  </div>
+
+  <div style="display:flex;padding:8px;border-top:1px solid #222;">
+    <input id="msg" placeholder="输入消息..." style="flex:1;padding:8px;border:none;border-radius:6px;outline:none;">
+    <button onclick="sendMsg()" style="margin-left:6px;background:#4f7cff;color:#fff;border:none;padding:8px 12px;border-radius:6px;">
+      发送
+    </button>
+  </div>
+
+</div>
+
+<script>
+function sendMsg() {
+  const input = document.getElementById("msg");
+  const box = document.getElementById("chatBox");
+
+  if (!input.value.trim()) return;
+
+  // 用户消息
+  const user = document.createElement("div");
+  user.style = "background:#4f7cff;padding:8px;border-radius:8px;align-self:flex-end;";
+  user.innerText = input.value;
+  box.appendChild(user);
+
+  // AI模拟回复
+  const ai = document.createElement("div");
+  ai.style = "background:#2a2f3a;padding:8px;border-radius:8px;align-self:flex-start;";
+  ai.innerText = "模拟AI：" + input.value;
+  box.appendChild(ai);
+
+  input.value = "";
+  box.scrollTop = box.scrollHeight;
+}
+</script>
 </body></html>
