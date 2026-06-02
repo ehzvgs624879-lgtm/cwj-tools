@@ -102,26 +102,48 @@ z-index:99999;
 </div>
 
 <script>
-function sendMsg() {
-  const input = document.getElementById("msg");
-  const box = document.getElementById("chatBox");
+async function sendMsg() {
+    const input = document.getElementById("msg");
+    const box = document.getElementById("chatBox");
 
-  if (!input.value.trim()) return;
+    const text = input.value.trim();
+    if (!text) return;
 
-  // 用户消息
-  const user = document.createElement("div");
-  user.style = "background:#4f7cff;padding:8px;border-radius:8px;align-self:flex-end;";
-  user.innerText = input.value;
-  box.appendChild(user);
+    // 1. 显示用户发送的消息 (保留了你界面里的蓝色背景样式)
+    const userDiv = document.createElement("div");
+    userDiv.style = "background:#4f7cff; padding:8px; margin:8px 0; border-radius:8px; text-align:right;";
+    userDiv.innerText = text;
+    box.appendChild(userDiv);
 
-  // AI模拟回复
-  const ai = document.createElement("div");
-  ai.style = "background:#2a2f3a;padding:8px;border-radius:8px;align-self:flex-start;";
-  ai.innerText = "模拟AI：" + input.value;
-  box.appendChild(ai);
+    input.value = "";
+    box.scrollTop = box.scrollHeight;
 
-  input.value = "";
-  box.scrollTop = box.scrollHeight;
+    // 2. 创建一个 AI 正在思考的提示框
+    const aiDiv = document.createElement("div");
+    aiDiv.style = "background:#2a2f3a; padding:8px; margin:8px 0; border-radius:8px; text-align:left;";
+    aiDiv.innerText = "AI 思考中...";
+    box.appendChild(aiDiv);
+    box.scrollTop = box.scrollHeight;
+
+    // 3. 联网请求 API
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+        const replyText = data.reply || data.content || (data.choices && data.choices[0].message.content) || "未收到有效回复";
+
+        // 4. 把思考中换成真正的 AI 回复
+        aiDiv.innerText = replyText;
+    } catch (error) {
+        aiDiv.innerText = "出错了: " + error.message;
+    }
+
+    box.scrollTop = box.scrollHeight;
 }
 </script>
+
 </body></html>
